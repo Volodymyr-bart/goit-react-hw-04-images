@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Container } from './App.styled';
 import { Searchbar } from './Searchbar/Searchbar';
@@ -23,72 +23,40 @@ export const App = () => {
   const [totalPage, setTotalPage] = useState('');
 
   useEffect(() => {
-    if (query === null) {
+    if (query === '') {
       return;
     }
-
-    async function finndImage() {
+    async function findImage() {
       try {
+        console.log(query);
         setIsLoading(true);
         const response = await axios.get(
           `https://pixabay.com/api/?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${page}`
         );
-        console.log(query);
         console.log(response);
+
         const { hits, totalHits } = response.data;
         const pages = Math.ceil(totalHits / this.state.perPage);
         setImages(prevState => [...prevState, ...hits]);
+        console.log(images);
         setTotalPage(pages);
       } catch (error) {
         return alert(`Sorry, please try again`);
       } finally {
         setIsLoading(false);
+        console.log(images);
       }
     }
 
-    finndImage();
+    findImage();
   }, [query, page]);
 
-  // async componentDidUpdate(prevProps, prevState) {
-  //   const { query, perPage, page } = this.state;
-  //   if (prevState.query !== query) {
-  //     this.setState({ images: [] });
-  //     try {
-  //       this.setState({ isLoading: true });
-  //       const response = await axios.get(
-  //         `https://pixabay.com/api/?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=1`
-  //       );
-  //       const { hits, totalHits } = response.data;
-  //       const pages = Math.ceil(totalHits / this.state.perPage);
-  //       this.setState({ images: hits, totalPage: pages });
-  //     } catch (error) {
-  //       console.log(error);
-  //     } finally {
-  //       this.setState({ isLoading: false });
-  //     }
-  //     return;
-  //   }
-  //   if (prevState.query === query && prevState.page !== page) {
-  //     try {
-  //       this.setState({ isLoading: true });
-  //       const response = await axios.get(
-  //         `https://pixabay.com/api/?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${page}`
-  //       );
-  //       const { hits } = response.data;
-  //       this.setState(prevState => ({
-  //         images: [...prevState.images, ...hits],
-  //       }));
-  //     } catch (error) {
-  //       console.log(error);
-  //     } finally {
-  //       this.setState({ isLoading: false });
-  //     }
-  //   }
-  // }
-  const onSubmit = query => {
-    setQuery(query);
-    setPage(1);
-    setImages([]);
+  const onSubmit = searchData => {
+    if (query !== searchData) {
+      setQuery(searchData);
+      setPage(1);
+      setImages([]);
+    }
   };
   const onImageClick = (url, tags) => {
     setLargeImage({ largeImage: { url, tags } });
