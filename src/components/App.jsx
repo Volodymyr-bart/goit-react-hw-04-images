@@ -28,23 +28,21 @@ export const App = () => {
     }
     async function findImage() {
       try {
-        console.log(query);
         setIsLoading(true);
         const response = await axios.get(
           `https://pixabay.com/api/?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${page}`
         );
-        console.log(response);
 
         const { hits, totalHits } = response.data;
-        const pages = Math.ceil(totalHits / this.state.perPage);
+        const pages = Math.ceil(totalHits / perPage);
         setImages(prevState => [...prevState, ...hits]);
-        console.log(images);
+
         setTotalPage(pages);
       } catch (error) {
+        console.log(error);
         return alert(`Sorry, please try again`);
       } finally {
         setIsLoading(false);
-        console.log(images);
       }
     }
 
@@ -59,7 +57,7 @@ export const App = () => {
     }
   };
   const onImageClick = (url, tags) => {
-    setLargeImage({ largeImage: { url, tags } });
+    setLargeImage({ url, tags });
   };
   const onHandleClose = () => {
     setLargeImage({ largeImage: { url: null, tags: null } });
