@@ -60,7 +60,7 @@ export const App = () => {
     setLargeImage({ url, tags });
   };
   const onHandleClose = () => {
-    setLargeImage({ largeImage: { url: null, tags: null } });
+    setLargeImage({ url: null, tags: null });
   };
   const onChangePage = () => {
     setPage(prevState => prevState + 1);
